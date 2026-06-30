@@ -1,0 +1,59 @@
+@extends('layouts.admin')
+
+@section('title', 'All Bookings')
+@section('page-title', 'All Bookings')
+
+@section('admin-content')
+<form method="GET" class="mb-4 flex flex-wrap gap-3">
+    <select name="salon_id" class="rounded-lg border-gray-300 text-sm shadow-sm focus:border-brand-500 focus:ring-brand-500" onchange="this.form.submit()">
+        <option value="">All Salons</option>
+        @foreach ($salons as $salon)
+            <option value="{{ $salon->id }}" {{ request('salon_id') == $salon->id ? 'selected' : '' }}>{{ $salon->name }}</option>
+        @endforeach
+    </select>
+    <select name="status" class="rounded-lg border-gray-300 text-sm shadow-sm focus:border-brand-500 focus:ring-brand-500" onchange="this.form.submit()">
+        <option value="">All Statuses</option>
+        @foreach (['pending', 'approved', 'rejected'] as $status)
+            <option value="{{ $status }}" {{ request('status') === $status ? 'selected' : '' }}>{{ ucfirst($status) }}</option>
+        @endforeach
+    </select>
+</form>
+
+<div class="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-200">
+    <table class="min-w-full divide-y divide-gray-200 text-sm">
+        <thead class="bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+            <tr>
+                <th class="px-4 py-3">Salon</th>
+                <th class="px-4 py-3">Customer</th>
+                <th class="px-4 py-3">Service</th>
+                <th class="px-4 py-3">Date / Time</th>
+                <th class="px-4 py-3">Status</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+            @forelse ($bookings as $booking)
+                <tr>
+                    <td class="px-4 py-3 font-medium">{{ $booking->salon->name }}</td>
+                    <td class="px-4 py-3">{{ $booking->customer_name }}<br><span class="text-gray-400">{{ $booking->customer_phone }}</span></td>
+                    <td class="px-4 py-3">{{ $booking->service->name }}</td>
+                    <td class="px-4 py-3">{{ $booking->datetime->format('M j, Y H:i') }}</td>
+                    <td class="px-4 py-3">
+                        <span @class([
+                            'rounded-full px-2 py-0.5 text-xs font-medium capitalize',
+                            'bg-yellow-100 text-yellow-700' => $booking->status === 'pending',
+                            'bg-green-100 text-green-700' => $booking->status === 'approved',
+                            'bg-red-100 text-red-700' => $booking->status === 'rejected',
+                        ])>{{ $booking->status }}</span>
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="5" class="px-4 py-6 text-center text-gray-400">No bookings found.</td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+</div>
+
+<div class="mt-4">{{ $bookings->links() }}</div>
+@endsection
