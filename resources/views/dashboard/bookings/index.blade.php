@@ -19,6 +19,7 @@
             <tr>
                 <th class="px-4 py-3">Customer</th>
                 <th class="px-4 py-3">Service</th>
+                <th class="px-4 py-3 hidden sm:table-cell">Staff</th>
                 <th class="px-4 py-3">Date / Time</th>
                 <th class="px-4 py-3">Status</th>
                 <th class="px-4 py-3"></th>
@@ -32,6 +33,7 @@
                         <span class="text-gray-400">{{ $booking->customer_phone }}</span>
                     </td>
                     <td class="px-4 py-3">{{ $booking->service->name }}</td>
+                    <td class="px-4 py-3 hidden sm:table-cell text-gray-500">{{ $booking->employee?->name ?? '—' }}</td>
                     <td class="px-4 py-3">{{ $booking->datetime->format('M j, Y H:i') }}</td>
                     <td class="px-4 py-3">
                         <span @class([

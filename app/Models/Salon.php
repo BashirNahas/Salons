@@ -17,9 +17,12 @@ class Salon extends Model
         'slug',
         'owner_id',
         'phone',
+        'email',
         'address',
         'description',
         'is_active',
+        'logo',
+        'instagram',
     ];
 
     protected function casts(): array
@@ -52,6 +55,11 @@ class Salon extends Model
     public function blockedDates(): HasMany
     {
         return $this->hasMany(BlockedDate::class);
+    }
+
+    public function employees(): HasMany
+    {
+        return $this->hasMany(Employee::class)->orderBy('sort_order')->orderBy('name');
     }
 
     public function subdomain(): string

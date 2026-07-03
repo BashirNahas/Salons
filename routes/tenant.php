@@ -4,6 +4,8 @@ use App\Http\Controllers\Dashboard\AuthController as DashboardAuthController;
 use App\Http\Controllers\Dashboard\BlockedDateController;
 use App\Http\Controllers\Dashboard\BookingController as DashboardBookingController;
 use App\Http\Controllers\Dashboard\DashboardController;
+use App\Http\Controllers\Dashboard\EmployeeController;
+use App\Http\Controllers\Dashboard\SalonProfileController;
 use App\Http\Controllers\Dashboard\ServiceController;
 use App\Http\Controllers\Dashboard\WorkingHourController;
 use App\Http\Controllers\Public\BookingController as PublicBookingController;
@@ -14,12 +16,6 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 | Tenant (salon subdomain) routes — {slug}.salons.synaptix.sy
 |--------------------------------------------------------------------------
-|
-| Bound by App\Http\Middleware\IdentifyTenant. Every model query made by
-| these routes that touches a tenant-owned table (services, bookings,
-| working_hours, blocked_dates) is automatically scoped to the resolved
-| salon by App\Models\Scopes\SalonScope.
-|
 */
 
 // Public booking site
@@ -47,11 +43,16 @@ Route::prefix('dashboard')->name('dashboard.')->group(function () {
 
         Route::resource('services', ServiceController::class)->except(['show']);
 
+        Route::resource('employees', EmployeeController::class)->except(['show']);
+
         Route::get('working-hours', [WorkingHourController::class, 'index'])->name('working-hours.index');
         Route::put('working-hours', [WorkingHourController::class, 'update'])->name('working-hours.update');
 
         Route::get('blocked-dates', [BlockedDateController::class, 'index'])->name('blocked-dates.index');
         Route::post('blocked-dates', [BlockedDateController::class, 'store'])->name('blocked-dates.store');
         Route::delete('blocked-dates/{blockedDate}', [BlockedDateController::class, 'destroy'])->name('blocked-dates.destroy');
+
+        Route::get('profile', [SalonProfileController::class, 'edit'])->name('profile.edit');
+        Route::put('profile', [SalonProfileController::class, 'update'])->name('profile.update');
     });
 });

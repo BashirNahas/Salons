@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Booking;
+use App\Models\Employee;
 use App\Models\Salon;
 use App\Models\Service;
 use App\Models\User;
@@ -28,17 +29,22 @@ class DatabaseSeeder extends Seeder
 
         $this->seedSalon(
             slug: 'issa',
-            name: "Issa's Salon",
+            name: "Issa's Barbershop",
             ownerName: 'Issa Khalil',
             ownerEmail: 'issa@salons.synaptix.sy',
             phone: '+963 11 123 4567',
             address: 'Damascus, Syria',
-            description: 'A premium hair and beauty salon in the heart of Damascus.',
+            description: 'A premium barbershop in the heart of Damascus. Expert cuts, fades, and beard grooming.',
             services: [
                 ['name' => 'Haircut', 'duration_minutes' => 30, 'price' => 15.00],
-                ['name' => 'Hair Coloring', 'duration_minutes' => 90, 'price' => 45.00],
+                ['name' => 'Fade Cut', 'duration_minutes' => 45, 'price' => 20.00],
                 ['name' => 'Beard Trim', 'duration_minutes' => 15, 'price' => 8.00],
-                ['name' => 'Manicure', 'duration_minutes' => 45, 'price' => 20.00],
+                ['name' => 'Hair & Beard Combo', 'duration_minutes' => 60, 'price' => 25.00],
+            ],
+            employees: [
+                ['name' => 'Issa Khalil', 'specialties' => 'Fades, Classic Cuts', 'sort_order' => 0],
+                ['name' => 'Ahmad Nasser', 'specialties' => 'Beard Styling, Hot Towel Shave', 'sort_order' => 1],
+                ['name' => 'Rami Saleh', 'specialties' => 'Modern Cuts, Coloring', 'sort_order' => 2],
             ],
         );
 
@@ -52,14 +58,20 @@ class DatabaseSeeder extends Seeder
             description: 'Modern beauty studio specializing in skincare and styling.',
             services: [
                 ['name' => 'Facial Treatment', 'duration_minutes' => 60, 'price' => 35.00],
-                ['name' => 'Blow Dry', 'duration_minutes' => 30, 'price' => 12.00],
+                ['name' => 'Blow Dry & Style', 'duration_minutes' => 30, 'price' => 12.00],
                 ['name' => 'Makeup Session', 'duration_minutes' => 60, 'price' => 40.00],
+                ['name' => 'Manicure', 'duration_minutes' => 45, 'price' => 18.00],
+            ],
+            employees: [
+                ['name' => 'Lina Haddad', 'specialties' => 'Skincare, Facials', 'sort_order' => 0],
+                ['name' => 'Sara Mousa', 'specialties' => 'Hair Styling, Blow Dry', 'sort_order' => 1],
             ],
         );
     }
 
     /**
      * @param  array<int, array{name: string, duration_minutes: int, price: float}>  $services
+     * @param  array<int, array{name: string, specialties: string, sort_order: int}>  $employees
      */
     private function seedSalon(
         string $slug,
@@ -70,6 +82,7 @@ class DatabaseSeeder extends Seeder
         string $address,
         string $description,
         array $services,
+        array $employees = [],
     ): void {
         $owner = User::factory()->create([
             'name' => $ownerName,
@@ -108,6 +121,16 @@ class DatabaseSeeder extends Seeder
                 'is_closed' => $day === 0,
             ]);
         }
+
+        $createdEmployees = collect($employees)->map(
+            fn (array $emp) => Employee::create([
+                'salon_id' => $salon->id,
+                'name' => $emp['name'],
+                'specialties' => $emp['specialties'] ?? null,
+                'sort_order' => $emp['sort_order'] ?? 0,
+                'is_active' => true,
+            ])
+        );
 
         $firstService = $createdServices->first();
         $secondService = $createdServices->get(1, $firstService);

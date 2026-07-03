@@ -15,6 +15,7 @@ class StoreBookingRequest extends FormRequest
     {
         return [
             'service_id' => ['required', 'integer', 'exists:services,id'],
+            'employee_id' => ['nullable', 'integer', 'exists:employees,id'],
             'date' => ['required', 'date', 'after_or_equal:today'],
             'time' => ['required', 'date_format:H:i'],
             'customer_name' => ['required', 'string', 'max:255'],

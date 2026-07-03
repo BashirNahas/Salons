@@ -21,6 +21,7 @@ class Booking extends Model
     protected $fillable = [
         'salon_id',
         'service_id',
+        'employee_id',
         'customer_name',
         'customer_phone',
         'customer_email',
@@ -39,5 +40,10 @@ class Booking extends Model
     public function service(): BelongsTo
     {
         return $this->belongsTo(Service::class);
+    }
+
+    public function employee(): BelongsTo
+    {
+        return $this->belongsTo(Employee::class);
     }
 }

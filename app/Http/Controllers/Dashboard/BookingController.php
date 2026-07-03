@@ -13,7 +13,7 @@ class BookingController extends Controller
 {
     public function index(Request $request): View
     {
-        $bookings = Booking::with('service')
+        $bookings = Booking::with(['service', 'employee'])
             ->when($request->filled('status'), fn ($q) => $q->where('status', $request->string('status')))
             ->orderBy('datetime')
             ->paginate(20)
