@@ -14,6 +14,14 @@ return Application::configure(basePath: dirname(__DIR__))
             Route::domain('{salonSlug}.'.config('tenancy.central_domain'))
                 ->middleware('web')
                 ->group(__DIR__.'/../routes/tenant.php');
+
+            // One-time browser installer for hosts without SSH. Registered
+            // WITHOUT the web middleware group on purpose: it must work
+            // before an APP_KEY exists (cookie encryption would otherwise
+            // throw MissingAppKeyException). 404s unless SETUP_TOKEN is set
+            // in .env — see App\Http\Controllers\SetupController.
+            Route::get('setup/{token}', \App\Http\Controllers\SetupController::class)
+                ->name('setup');
         },
     )
     ->withMiddleware(function (Middleware $middleware) {

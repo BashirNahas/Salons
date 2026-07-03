@@ -27,6 +27,13 @@ class SetupController extends Controller
 
         $output = [];
 
+        if ((string) config('app.key') === '') {
+            $output[] = '== Generating application key ==';
+            Artisan::call('key:generate', ['--force' => true]);
+            $output[] = trim(Artisan::output());
+            $output[] = '';
+        }
+
         $output[] = '== Running database migrations ==';
         Artisan::call('migrate', ['--force' => true]);
         $output[] = trim(Artisan::output());
