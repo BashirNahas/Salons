@@ -17,6 +17,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | One-time Setup Token
+    |--------------------------------------------------------------------------
+    |
+    | While set, GET /setup/{token} runs migrations from the browser (for
+    | shared hosting without SSH). Remove SETUP_TOKEN from .env after the
+    | first deploy to disable the installer route completely.
+    |
+    */
+
+    'setup_token' => env('SETUP_TOKEN'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Environment
     |--------------------------------------------------------------------------
     |

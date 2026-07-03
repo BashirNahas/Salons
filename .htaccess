@@ -1,0 +1,21 @@
+# Shared-hosting front controller.
+#
+# On DirectAdmin/cPanel the vhost document root is public_html and cannot
+# always be pointed at Laravel's public/ directory. This file lets the whole
+# app live in public_html: every request is internally rewritten into
+# public/, and direct access to application internals is refused.
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Refuse direct access to sensitive files and directories.
+    RewriteRule ^\.env - [F,L]
+    RewriteRule ^(app|bootstrap|config|database|routes|storage|tests|vendor)(/|$) - [F,L]
+    RewriteRule ^(artisan|composer\.(json|lock)|package\.json)$ - [F,L]
+
+    # Everything else is served by Laravel's public/ directory.
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
+
+# Block directory listings everywhere.
+Options -Indexes
