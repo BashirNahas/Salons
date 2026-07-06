@@ -20,7 +20,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory()->create([
+        // Use create() rather than factory()->create() so the demo seeder
+        // works on production installs (composer install --no-dev), where
+        // fakerphp/faker is absent. All fields are explicit anyway, so the
+        // factory added nothing here.
+        User::create([
             'name' => 'Super Admin',
             'email' => 'admin@salons.synaptix.sy',
             'password' => 'password',
@@ -84,7 +88,7 @@ class DatabaseSeeder extends Seeder
         array $services,
         array $employees = [],
     ): void {
-        $owner = User::factory()->create([
+        $owner = User::create([
             'name' => $ownerName,
             'email' => $ownerEmail,
             'password' => 'password',
