@@ -7,13 +7,23 @@ use Illuminate\Support\Facades\Route;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
-        web: __DIR__.'/../routes/web.php',
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
         then: function () {
+            // Tenant subdomain routes are registered BEFORE the central
+            // routes. Laravel matches routes in registration order (first
+            // match wins), and the central "/" homepage route has no domain
+            // constraint, so it would otherwise capture "/" on every host —
+            // including salon subdomains, serving the central welcome page
+            // instead of the salon's public booking page. Registering the
+            // domain-scoped tenant group first makes it win for
+            // {slug}.salons.synaptix.sy hosts.
             Route::domain('{salonSlug}.'.config('tenancy.central_domain'))
                 ->middleware('web')
                 ->group(__DIR__.'/../routes/tenant.php');
+
+            Route::middleware('web')
+                ->group(__DIR__.'/../routes/web.php');
 
             // One-time browser installer for hosts without SSH. Registered
             // WITHOUT the web middleware group on purpose: it must work
