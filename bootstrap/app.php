@@ -25,6 +25,20 @@ return Application::configure(basePath: dirname(__DIR__))
             Route::middleware('web')
                 ->group(__DIR__.'/../routes/web.php');
 
+            // File server for the "public" disk (salon logos etc.). Doesn't
+            // rely on the public/storage symlink at all — shared hosting
+            // often breaks it (zip extractors that drop symlinks, Apache
+            // with FollowSymLinks disabled), so this serves the files
+            // directly from storage/app/public instead. Named "media/{path}"
+            // rather than "storage/{path}" because Laravel's own local disk
+            // ('serve' => true in config/filesystems.php) already registers
+            // a built-in "storage/{path}" route that would otherwise shadow
+            // this one. No domain constraint, so it works on the central
+            // domain and every salon subdomain alike.
+            Route::get('media/{path}', [\App\Http\Controllers\PublicStorageController::class, 'show'])
+                ->where('path', '.*')
+                ->name('public.storage');
+
             // One-time browser installer for hosts without SSH. Registered
             // WITHOUT the web middleware group on purpose: it must work
             // before an APP_KEY exists (cookie encryption would otherwise

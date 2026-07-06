@@ -66,15 +66,16 @@ class SalonController extends Controller
     public function update(UpdateSalonRequest $request, Salon $salon): RedirectResponse
     {
         $data = $request->validated();
+        $isActive = $request->boolean('is_active');
 
-        DB::transaction(function () use ($data, $salon) {
+        DB::transaction(function () use ($data, $salon, $isActive) {
             $salon->update([
                 'name' => $data['name'],
                 'slug' => $data['slug'],
                 'phone' => $data['phone'] ?? null,
                 'address' => $data['address'] ?? null,
                 'description' => $data['description'] ?? null,
-                'is_active' => $request->boolean('is_active'),
+                'is_active' => $isActive,
             ]);
 
             $ownerUpdate = [

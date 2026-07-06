@@ -11,7 +11,7 @@
         <div class="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
             <div>
                 @if($salon->logo)
-                    <img src="{{ asset('storage/'.$salon->logo) }}" alt="{{ $salon->name }}" class="mb-4 h-16 w-16 rounded-2xl object-cover ring-2 ring-white/30">
+                    <img src="{{ $salon->logoUrl() }}" alt="{{ $salon->name }}" class="mb-4 h-16 w-16 rounded-2xl object-cover ring-2 ring-white/30">
                 @endif
                 <h1 class="text-3xl font-bold sm:text-4xl">{{ $salon->name }}</h1>
                 @if($salon->address)

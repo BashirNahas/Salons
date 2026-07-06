@@ -11,7 +11,7 @@
 
         <div class="flex items-center gap-3 border-b border-brand-800 px-5 py-4">
             @if(currentSalon()->logo)
-                <img src="{{ asset('storage/'.currentSalon()->logo) }}" alt="" class="h-9 w-9 rounded-full object-cover ring-2 ring-brand-600">
+                <img src="{{ currentSalon()->logoUrl() }}" alt="" class="h-9 w-9 rounded-full object-cover ring-2 ring-brand-600">
             @else
                 <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-600 text-sm font-bold text-white">
                     {{ mb_strtoupper(mb_substr(currentSalon()->name, 0, 1)) }}

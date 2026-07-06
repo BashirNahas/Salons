@@ -6,7 +6,7 @@
         <div class="mx-auto flex max-w-5xl items-center justify-between px-4 py-3 sm:px-6">
             <a href="{{ route('public.salon.show') }}" class="flex items-center gap-2.5">
                 @if(currentSalon()->logo)
-                    <img src="{{ asset('storage/'.currentSalon()->logo) }}" alt="{{ currentSalon()->name }}" class="h-8 w-8 rounded-full object-cover">
+                    <img src="{{ currentSalon()->logoUrl() }}" alt="{{ currentSalon()->name }}" class="h-8 w-8 rounded-full object-cover">
                 @else
                     <div class="flex h-8 w-8 items-center justify-center rounded-full bg-brand-600 text-xs font-bold text-white">
                         {{ mb_strtoupper(mb_substr(currentSalon()->name, 0, 1)) }}

@@ -73,4 +73,9 @@ class Salon extends Model
 
         return rtrim("{$scheme}://{$this->subdomain()}/{$path}", '/');
     }
+
+    public function logoUrl(): ?string
+    {
+        return $this->logo ? route('public.storage', ['path' => $this->logo]) : null;
+    }
 }

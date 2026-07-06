@@ -18,7 +18,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">Salon Logo</label>
                 <div class="flex items-center gap-4">
                     @if($salon->logo)
-                        <img src="{{ asset('storage/'.$salon->logo) }}" alt="Current logo" class="h-14 w-14 rounded-xl object-cover ring-2 ring-brand-100">
+                        <img src="{{ $salon->logoUrl() }}" alt="Current logo" class="h-14 w-14 rounded-xl object-cover ring-2 ring-brand-100">
                     @else
                         <div class="flex h-14 w-14 items-center justify-center rounded-xl bg-brand-100 text-2xl font-bold text-brand-700">
                             {{ mb_strtoupper(mb_substr($salon->name, 0, 1)) }}
