@@ -141,7 +141,20 @@
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Available Times</label>
-                    <div id="slots-container" x-html="slotsHtml" class="min-h-[60px]"></div>
+                    <div class="min-h-[60px]">
+                        <p x-show="slotsState === 'idle'" class="text-sm text-gray-400">Select a date to see available times.</p>
+                        <p x-show="slotsState === 'loading'" class="text-sm text-gray-400">Loading available times…</p>
+                        <p x-show="slotsState === 'empty'" class="text-sm text-gray-400">No available times for this date.</p>
+                        <p x-show="slotsState === 'error'" class="text-sm text-red-500">Could not load available times. Please try again.</p>
+                        <div x-show="slotsState === 'loaded'" class="grid grid-cols-3 gap-2 sm:grid-cols-4">
+                            <template x-for="slot in slots" :key="slot">
+                                <button type="button" @click="selectedTime = slot"
+                                        :class="selectedTime === slot ? 'bg-brand-600 text-white border-brand-600' : 'border-gray-200 text-gray-700 hover:border-brand-400 hover:bg-brand-50'"
+                                        class="rounded-lg border px-3 py-2.5 text-sm font-medium transition-colors"
+                                        x-text="slot"></button>
+                            </template>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -233,7 +246,8 @@ function bookingWizard() {
         selectedDate: '',
         selectedTime: '',
 
-        slotsHtml: '<p class="text-sm text-gray-400">Select a date to see available times.</p>',
+        slots: [],
+        slotsState: 'idle', // idle | loading | loaded | empty | error
 
         get serviceName() {
             return this.selectedService ? (serviceNames[this.selectedService] || '') : '';
@@ -288,7 +302,8 @@ function bookingWizard() {
             if (!this.selectedService || !this.selectedDate) return;
 
             this.selectedTime = '';
-            this.slotsHtml = '<p class="text-sm text-gray-400">Loading available times…</p>';
+            this.slots = [];
+            this.slotsState = 'loading';
 
             let url = `${slotsUrl}?service_id=${encodeURIComponent(this.selectedService)}&date=${encodeURIComponent(this.selectedDate)}`;
             if (this.selectedEmployee) {
@@ -299,43 +314,19 @@ function bookingWizard() {
                 .then(r => r.json())
                 .then(data => {
                     if (!data.slots || data.slots.length === 0) {
-                        this.slotsHtml = '<p class="text-sm text-gray-400">No available times for this date.</p>';
+                        this.slots = [];
+                        this.slotsState = 'empty';
                         return;
                     }
-
-                    const self = this;
-                    let html = '<div class="grid grid-cols-3 gap-2 sm:grid-cols-4">';
-                    data.slots.forEach(slot => {
-                        html += `<button type="button" onclick="window.__bookingSelectSlot('${slot}', this)"
-                            class="slot-btn rounded-lg border border-gray-200 px-3 py-2.5 text-sm font-medium text-gray-700 hover:border-brand-400 hover:bg-brand-50 transition-colors">${slot}</button>`;
-                    });
-                    html += '</div>';
-                    this.slotsHtml = html;
+                    this.slots = data.slots;
+                    this.slotsState = 'loaded';
                 })
                 .catch(() => {
-                    this.slotsHtml = '<p class="text-sm text-red-500">Could not load available times. Please try again.</p>';
+                    this.slotsState = 'error';
                 });
         },
     };
 }
-
-window.__bookingSelectSlot = function(slot, btn) {
-    document.querySelectorAll('.slot-btn').forEach(b => {
-        b.classList.remove('bg-brand-600', 'text-white', 'border-brand-600');
-        b.classList.add('border-gray-200', 'text-gray-700');
-    });
-    btn.classList.remove('border-gray-200', 'text-gray-700');
-    btn.classList.add('bg-brand-600', 'text-white', 'border-brand-600');
-
-    // Update Alpine state
-    const component = document.querySelector('[x-data]').__x;
-    if (component) {
-        component.$data.selectedTime = slot;
-    } else {
-        // fallback: try Alpine.store or direct DOM
-        document.querySelector('input[name="time"]').value = slot;
-    }
-};
 </script>
 @endpush
 @endsection
