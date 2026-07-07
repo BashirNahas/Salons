@@ -8,6 +8,7 @@ use App\Http\Controllers\Dashboard\EmployeeController;
 use App\Http\Controllers\Dashboard\SalonProfileController;
 use App\Http\Controllers\Dashboard\ServiceController;
 use App\Http\Controllers\Dashboard\WorkingHourController;
+use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\Public\BookingController as PublicBookingController;
 use App\Http\Controllers\Public\SalonController as PublicSalonController;
 use Illuminate\Support\Facades\Route;
@@ -23,6 +24,7 @@ Route::get('/', [PublicSalonController::class, 'show'])->name('public.salon.show
 Route::get('book', [PublicBookingController::class, 'create'])->name('public.booking.create');
 Route::get('book/slots', [PublicBookingController::class, 'slots'])->name('public.booking.slots');
 Route::post('book', [PublicBookingController::class, 'store'])->name('public.booking.store');
+Route::get('lang/{locale}', [LocaleController::class, 'update'])->name('public.locale.update');
 
 // Salon owner dashboard
 Route::prefix('dashboard')->name('dashboard.')->group(function () {

@@ -23,6 +23,7 @@ class Salon extends Model
         'is_active',
         'logo',
         'instagram',
+        'brand_color',
     ];
 
     protected function casts(): array

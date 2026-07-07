@@ -33,7 +33,7 @@
             <div class="shrink-0">
                 <a href="{{ route('public.booking.create') }}" class="inline-flex items-center gap-2 rounded-2xl bg-white px-7 py-3.5 text-base font-bold text-brand-700 shadow-lg hover:bg-brand-50 transition-colors">
                     <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                    Book Appointment
+                    {{ __('Book Appointment') }}
                 </a>
             </div>
         </div>
@@ -43,13 +43,15 @@
 {{-- Services --}}
 <section class="mt-10">
     <div class="mb-5 flex items-center justify-between">
-        <h2 class="text-xl font-bold text-gray-900">Services</h2>
-        <a href="{{ route('public.booking.create') }}" class="text-sm font-medium text-brand-600 hover:text-brand-700">Book now &rarr;</a>
+        <h2 class="text-xl font-bold text-gray-900">{{ __('Services') }}</h2>
+        <a href="{{ route('public.booking.create') }}" class="flex items-center gap-1 text-sm font-medium text-brand-600 hover:text-brand-700">
+            {{ __('Book now') }} <span class="rtl:rotate-180">&rarr;</span>
+        </a>
     </div>
 
     @if($services->isEmpty())
         <div class="rounded-xl border border-dashed border-gray-200 py-10 text-center text-gray-400">
-            No services listed yet.
+            {{ __('No services listed yet.') }}
         </div>
     @else
         <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -66,10 +68,10 @@
                         @endif
                     </div>
                     <h3 class="mt-3 font-semibold text-gray-900 group-hover:text-brand-700">{{ $service->name }}</h3>
-                    <p class="mt-1 text-sm text-gray-500">{{ $service->duration_minutes }} min</p>
+                    <p class="mt-1 text-sm text-gray-500">{{ $service->duration_minutes }} {{ __('min') }}</p>
                     <div class="mt-4 flex items-center gap-1 text-sm font-medium text-brand-600">
-                        Book this service
-                        <svg class="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        {{ __('Book this service') }}
+                        <svg class="h-4 w-4 rtl:rotate-180 transition-transform group-hover:translate-x-1 rtl:group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                     </div>
                 </a>
             @endforeach
@@ -80,7 +82,7 @@
 {{-- Staff --}}
 @if($employees->isNotEmpty())
 <section class="mt-10">
-    <h2 class="mb-5 text-xl font-bold text-gray-900">Our Team</h2>
+    <h2 class="mb-5 text-xl font-bold text-gray-900">{{ __('Our Team') }}</h2>
     <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
         @foreach($employees as $employee)
             <div class="flex flex-col items-center rounded-xl border border-gray-100 bg-white p-5 shadow-sm text-center">
@@ -103,11 +105,11 @@
 
 {{-- CTA --}}
 <div class="mt-10 rounded-2xl bg-brand-50 px-6 py-8 text-center">
-    <h3 class="text-lg font-bold text-brand-900">Ready to book?</h3>
-    <p class="mt-1 text-sm text-brand-700">Choose your service, pick your preferred time, and we'll confirm shortly.</p>
+    <h3 class="text-lg font-bold text-brand-900">{{ __('Ready to book?') }}</h3>
+    <p class="mt-1 text-sm text-brand-700">{{ __("Choose your service, pick your preferred time, and we'll confirm shortly.") }}</p>
     <a href="{{ route('public.booking.create') }}" class="mt-4 inline-flex items-center gap-2 rounded-full bg-brand-600 px-6 py-3 text-sm font-semibold text-white shadow hover:bg-brand-700 transition-colors">
-        Book an Appointment
-        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+        {{ __('Book an Appointment') }}
+        <svg class="h-4 w-4 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
     </a>
 </div>
 

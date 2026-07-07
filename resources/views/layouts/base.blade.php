@@ -1,5 +1,15 @@
+@php
+    // Salon owners can pick a brand color that reskins their public booking
+    // page (buttons, header accents, hero banner). Scoped to customer-facing
+    // "public.*" routes only, so every owner's dashboard stays the same
+    // familiar pink regardless of what their customers see.
+    $brandColorHex = request()->routeIs('public.*') && currentSalon()
+        ? currentSalon()->brand_color
+        : null;
+    $brandPalette = \App\Support\ColorPalette::fromHex($brandColorHex);
+@endphp
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,11 +20,7 @@
             theme: {
                 extend: {
                     colors: {
-                        brand: {
-                            50: '#fdf2f8', 100: '#fce7f3', 200: '#fbcfe8', 300: '#f9a8d4',
-                            400: '#f472b6', 500: '#ec4899', 600: '#db2777', 700: '#be185d',
-                            800: '#9d174d', 900: '#831843', 950: '#500724',
-                        },
+                        brand: @json($brandPalette),
                     },
                 },
             },

@@ -60,7 +60,7 @@ class BookingController extends Controller
 
         if (! $isAvailable) {
             return back()->withInput()->withErrors([
-                'time' => 'That time slot is no longer available. Please choose another.',
+                'time' => __('That time slot is no longer available. Please choose another.'),
             ]);
         }
 
@@ -76,6 +76,6 @@ class BookingController extends Controller
         ]);
 
         return redirect()->route('public.booking.create')
-            ->with('status', 'Your booking request has been submitted! The salon will confirm it shortly.');
+            ->with('status', __('Your booking request has been submitted! The salon will confirm it shortly.'));
     }
 }

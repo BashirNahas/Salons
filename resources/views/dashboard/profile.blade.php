@@ -78,6 +78,16 @@
                                    placeholder="yoursalon">
                         </div>
                     </div>
+
+                    <div class="sm:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">Brand Color</label>
+                        <div class="flex items-center gap-3">
+                            <input type="color" name="brand_color" value="{{ old('brand_color', $salon->brand_color ?? '#db2777') }}"
+                                   class="h-11 w-16 cursor-pointer rounded-lg border border-gray-300 p-1">
+                            <p class="text-xs text-gray-400">Used for buttons and accents on your public booking page only — your dashboard stays the same.</p>
+                        </div>
+                        @error('brand_color') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
+                    </div>
                 </div>
             </div>
 

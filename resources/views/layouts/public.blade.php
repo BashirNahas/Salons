@@ -14,9 +14,17 @@
                 @endif
                 <span class="text-base font-bold text-gray-900">{{ currentSalon()->name }}</span>
             </a>
-            <a href="{{ route('public.booking.create') }}" class="rounded-full bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-700 transition-colors">
-                Book Now
-            </a>
+            <div class="flex items-center gap-3">
+                <div class="flex items-center rounded-full bg-gray-100 p-0.5 text-xs font-medium">
+                    <a href="{{ route('public.locale.update', 'en') }}"
+                       class="rounded-full px-2.5 py-1 transition-colors {{ app()->getLocale() === 'en' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500' }}">EN</a>
+                    <a href="{{ route('public.locale.update', 'ar') }}"
+                       class="rounded-full px-2.5 py-1 transition-colors {{ app()->getLocale() === 'ar' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500' }}">عربي</a>
+                </div>
+                <a href="{{ route('public.booking.create') }}" class="rounded-full bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-700 transition-colors">
+                    {{ __('Book Now') }}
+                </a>
+            </div>
         </div>
     </header>
 

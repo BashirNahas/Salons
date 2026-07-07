@@ -29,6 +29,7 @@ class SalonProfileController extends Controller
             'description' => ['nullable', 'string', 'max:2000'],
             'instagram' => ['nullable', 'string', 'max:100'],
             'logo' => ['nullable', 'image', 'max:2048'],
+            'brand_color' => ['nullable', 'regex:/^#[0-9a-fA-F]{6}$/'],
         ]);
 
         if ($request->hasFile('logo')) {
