@@ -91,7 +91,12 @@ class RecurringBookingController extends Controller
             'notes' => ['nullable', 'string', 'max:1000'],
         ]);
 
-        $data['is_active'] = $request->boolean('is_active', true);
+        // No default here: this method is shared by store() and update().
+        // An unchecked checkbox is absent from the request, so defaulting to
+        // true would make it impossible to pause an existing recurring
+        // booking from the edit form. The create form ships with the box
+        // checked, so new records are active by default anyway.
+        $data['is_active'] = $request->boolean('is_active');
 
         return $data;
     }
