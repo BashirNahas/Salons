@@ -48,6 +48,11 @@
                 Staff / Barbers
             </a>
 
+            <a href="{{ route('dashboard.recurring-bookings.index') }}" @class(['flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors', 'bg-brand-700 text-white shadow-sm' => request()->routeIs('dashboard.recurring-bookings.*'), 'text-brand-300 hover:bg-brand-800 hover:text-white' => !request()->routeIs('dashboard.recurring-bookings.*')])>
+                <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                Regular Customers
+            </a>
+
             <p class="px-3 pb-1 pt-4 text-xs font-semibold uppercase tracking-wider text-brand-500">Schedule</p>
 
             <a href="{{ route('dashboard.working-hours.index') }}" @class(['flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors', 'bg-brand-700 text-white shadow-sm' => request()->routeIs('dashboard.working-hours.*'), 'text-brand-300 hover:bg-brand-800 hover:text-white' => !request()->routeIs('dashboard.working-hours.*')])>

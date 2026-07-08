@@ -14,7 +14,7 @@ use Illuminate\Support\Collection;
 
 class AvailabilityService
 {
-    private const SLOT_STEP_MINUTES = 15;
+    private const SLOT_STEP_MINUTES = 30;
 
     /**
      * Return bookable start times for the given salon/service/date.

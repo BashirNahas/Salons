@@ -5,6 +5,7 @@ use App\Http\Controllers\Dashboard\BlockedDateController;
 use App\Http\Controllers\Dashboard\BookingController as DashboardBookingController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Dashboard\EmployeeController;
+use App\Http\Controllers\Dashboard\RecurringBookingController;
 use App\Http\Controllers\Dashboard\SalonProfileController;
 use App\Http\Controllers\Dashboard\ServiceController;
 use App\Http\Controllers\Dashboard\WorkingHourController;
@@ -40,12 +41,16 @@ Route::prefix('dashboard')->name('dashboard.')->group(function () {
 
         Route::get('bookings', [DashboardBookingController::class, 'index'])->name('bookings.index');
         Route::get('bookings/calendar', [DashboardBookingController::class, 'calendar'])->name('bookings.calendar');
+        Route::get('bookings/create', [DashboardBookingController::class, 'create'])->name('bookings.create');
+        Route::post('bookings', [DashboardBookingController::class, 'store'])->name('bookings.store');
         Route::post('bookings/{booking}/approve', [DashboardBookingController::class, 'approve'])->name('bookings.approve');
         Route::post('bookings/{booking}/reject', [DashboardBookingController::class, 'reject'])->name('bookings.reject');
 
         Route::resource('services', ServiceController::class)->except(['show']);
 
         Route::resource('employees', EmployeeController::class)->except(['show']);
+
+        Route::resource('recurring-bookings', RecurringBookingController::class)->except(['show']);
 
         Route::get('working-hours', [WorkingHourController::class, 'index'])->name('working-hours.index');
         Route::put('working-hours', [WorkingHourController::class, 'update'])->name('working-hours.update');

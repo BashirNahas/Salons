@@ -18,6 +18,12 @@ class Booking extends Model
 
     public const STATUS_REJECTED = 'rejected';
 
+    public const SOURCE_ONLINE = 'online';
+
+    public const SOURCE_MANUAL = 'manual';
+
+    public const SOURCE_RECURRING = 'recurring';
+
     protected $fillable = [
         'salon_id',
         'service_id',
@@ -28,6 +34,8 @@ class Booking extends Model
         'datetime',
         'status',
         'notes',
+        'source',
+        'recurring_booking_id',
     ];
 
     protected function casts(): array
@@ -45,5 +53,10 @@ class Booking extends Model
     public function employee(): BelongsTo
     {
         return $this->belongsTo(Employee::class);
+    }
+
+    public function recurringBooking(): BelongsTo
+    {
+        return $this->belongsTo(RecurringBooking::class);
     }
 }

@@ -192,8 +192,8 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1.5">{{ __('Phone') }} <span class="text-red-500">*</span></label>
-                        <input type="tel" name="customer_phone" value="{{ old('customer_phone') }}" required
-                               class="w-full rounded-xl border-gray-300 shadow-sm focus:border-brand-500 focus:ring-brand-500"
+                        <input type="tel" dir="ltr" name="customer_phone" value="{{ old('customer_phone') }}" required
+                               class="w-full rounded-xl border-gray-300 text-left shadow-sm focus:border-brand-500 focus:ring-brand-500"
                                placeholder="+963 ...">
                         @error('customer_phone') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                     </div>
