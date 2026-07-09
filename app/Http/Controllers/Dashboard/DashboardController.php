@@ -16,6 +16,7 @@ class DashboardController extends Controller
 
         $todayBookings = Booking::with(['service', 'employee'])
             ->whereDate('datetime', $today)
+            ->whereNotIn('status', [Booking::STATUS_REJECTED, Booking::STATUS_CANCELLED])
             ->orderBy('datetime')
             ->get();
 

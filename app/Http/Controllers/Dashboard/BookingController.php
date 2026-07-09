@@ -30,7 +30,7 @@ class BookingController extends Controller
         $month = Carbon::parse($request->get('month', now()->format('Y-m-01')))->startOfMonth();
 
         $bookings = Booking::with('service')
-            ->where('status', '!=', Booking::STATUS_REJECTED)
+            ->whereNotIn('status', [Booking::STATUS_REJECTED, Booking::STATUS_CANCELLED])
             ->whereBetween('datetime', [$month->clone()->startOfMonth(), $month->clone()->endOfMonth()])
             ->orderBy('datetime')
             ->get()
@@ -122,5 +122,20 @@ class BookingController extends Controller
         $booking->update(['status' => Booking::STATUS_REJECTED]);
 
         return back()->with('status', __('Booking rejected.'));
+    }
+
+    public function cancel(Booking $booking): RedirectResponse
+    {
+        if (! $booking->canBeCancelled()) {
+            return back()->withErrors(['booking' => __('This appointment can no longer be cancelled.')]);
+        }
+
+        // Status change only — the row stays as history, and every
+        // availability check (public slots, manual-booking overlap, the
+        // recurring generator) counts pending/approved rows only, so the
+        // slot opens up again immediately.
+        $booking->update(['status' => Booking::STATUS_CANCELLED]);
+
+        return back()->with('status', __('Appointment cancelled. The time slot is available again.'));
     }
 }

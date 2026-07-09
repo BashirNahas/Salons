@@ -45,6 +45,7 @@ Route::prefix('dashboard')->name('dashboard.')->group(function () {
         Route::post('bookings', [DashboardBookingController::class, 'store'])->name('bookings.store');
         Route::post('bookings/{booking}/approve', [DashboardBookingController::class, 'approve'])->name('bookings.approve');
         Route::post('bookings/{booking}/reject', [DashboardBookingController::class, 'reject'])->name('bookings.reject');
+        Route::post('bookings/{booking}/cancel', [DashboardBookingController::class, 'cancel'])->name('bookings.cancel');
 
         Route::resource('services', ServiceController::class)->except(['show']);
 

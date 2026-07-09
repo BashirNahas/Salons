@@ -101,6 +101,11 @@
     "Select…": "اختر…",
     "Time": "الوقت",
     "Cancel": "إلغاء",
+    "Cancelled": "ملغي",
+    "Cancel Appointment": "إلغاء الموعد",
+    "Cancel the appointment for :name? The time slot will become available again.": "هل تريد إلغاء موعد :name؟ سيصبح هذا الوقت متاحًا للحجز من جديد.",
+    "Appointment cancelled. The time slot is available again.": "تم إلغاء الموعد، وأصبح هذا الوقت متاحًا للحجز من جديد.",
+    "This appointment can no longer be cancelled.": "لا يمكن إلغاء هذا الموعد بعد الآن.",
     "Appointment added.": "تمت إضافة الموعد.",
     "This time overlaps with an existing appointment. Please choose another time.": "يتعارض هذا الوقت مع موعد آخر. يرجى اختيار وقت مختلف.",
 

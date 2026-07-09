@@ -18,6 +18,8 @@ class Booking extends Model
 
     public const STATUS_REJECTED = 'rejected';
 
+    public const STATUS_CANCELLED = 'cancelled';
+
     public const SOURCE_ONLINE = 'online';
 
     public const SOURCE_MANUAL = 'manual';
@@ -58,5 +60,15 @@ class Booking extends Model
     public function recurringBooking(): BelongsTo
     {
         return $this->belongsTo(RecurringBooking::class);
+    }
+
+    /**
+     * Cancelling only makes sense for appointments that still hold a slot:
+     * pending requests and approved bookings. Rejected/cancelled rows are
+     * already terminal.
+     */
+    public function canBeCancelled(): bool
+    {
+        return in_array($this->status, [self::STATUS_PENDING, self::STATUS_APPROVED], true);
     }
 }

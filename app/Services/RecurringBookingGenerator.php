@@ -91,8 +91,13 @@ class RecurringBookingGenerator
      */
     public function removeFutureOccurrences(RecurringBooking $recurring): int
     {
+        // Cancelled occurrences are kept: they are audit history, and their
+        // presence is what stops generate() from re-creating that same
+        // datetime after a regenerate() — otherwise editing the rule would
+        // silently undo a cancellation the owner made on purpose.
         return Booking::where('recurring_booking_id', $recurring->id)
             ->where('datetime', '>=', now())
+            ->where('status', '!=', Booking::STATUS_CANCELLED)
             ->delete();
     }
 

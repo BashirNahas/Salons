@@ -16,7 +16,7 @@
     <select name="status" onchange="this.form.submit()"
             class="rounded-lg border-0 py-2 text-sm text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-brand-600">
         <option value="">{{ __('All Statuses') }}</option>
-        @foreach (['pending', 'approved', 'rejected'] as $status)
+        @foreach (['pending', 'approved', 'rejected', 'cancelled'] as $status)
             <option value="{{ $status }}" @selected(request('status') === $status)>{{ __(ucfirst($status)) }}</option>
         @endforeach
     </select>

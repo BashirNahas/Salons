@@ -10,7 +10,7 @@
         <select name="status" onchange="this.form.submit()"
                 class="rounded-lg border-0 py-2 text-sm text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-brand-600">
             <option value="">{{ __('All Statuses') }}</option>
-            @foreach (['pending', 'approved', 'rejected'] as $status)
+            @foreach (['pending', 'approved', 'rejected', 'cancelled'] as $status)
                 <option value="{{ $status }}" @selected(request('status') === $status)>{{ __(ucfirst($status)) }}</option>
             @endforeach
         </select>
@@ -83,6 +83,12 @@
                                         <x-btn size="sm" variant="ghost" class="!text-red-600">{{ __('Reject') }}</x-btn>
                                     </form>
                                 </div>
+                            @elseif ($booking->status === 'approved')
+                                <form method="POST" action="{{ route('dashboard.bookings.cancel', $booking) }}"
+                                      onsubmit="return confirm(@js(__('Cancel the appointment for :name? The time slot will become available again.', ['name' => $booking->customer_name])));">
+                                    @csrf
+                                    <x-btn size="sm" variant="ghost" class="!text-red-600">{{ __('Cancel Appointment') }}</x-btn>
+                                </form>
                             @endif
                         </td>
                     </tr>
