@@ -44,6 +44,6 @@ class SalonProfileController extends Controller
         $salon->update($data);
 
         return redirect()->route('dashboard.profile.edit')
-            ->with('status', 'Salon profile updated.');
+            ->with('status', __('Salon profile updated.'));
     }
 }

@@ -1,28 +1,29 @@
 @extends('layouts.guest')
 
-@section('title', 'Salon Login')
+@section('title', __('Salon Login'))
+
+@section('page-logo')
+    @if (currentSalon()->logo)
+        <img src="{{ currentSalon()->logoUrl() }}" alt="" class="mx-auto mb-4 h-14 w-14 rounded-2xl object-cover ring-1 ring-gray-950/10">
+    @else
+        <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-600 text-xl font-semibold text-white">
+            {{ mb_strtoupper(mb_substr(currentSalon()->name, 0, 1)) }}
+        </div>
+    @endif
+@endsection
+
 @section('page-title', currentSalon()->name)
-@section('page-subtitle', 'Sign in to manage your salon')
+@section('page-subtitle', __('Sign in to manage your salon'))
 
 @section('guest-content')
-<form method="POST" action="{{ route('dashboard.login') }}" class="space-y-4">
+<form method="POST" action="{{ route('dashboard.login') }}" class="space-y-5">
     @csrf
-    <div>
-        <label class="block text-sm font-medium text-gray-700">Email</label>
-        <input type="email" name="email" value="{{ old('email') }}" required autofocus
-               class="mt-1 w-full rounded-lg border-gray-300 shadow-sm focus:border-brand-500 focus:ring-brand-500">
-    </div>
-    <div>
-        <label class="block text-sm font-medium text-gray-700">Password</label>
-        <input type="password" name="password" required
-               class="mt-1 w-full rounded-lg border-gray-300 shadow-sm focus:border-brand-500 focus:ring-brand-500">
-    </div>
-    <label class="flex items-center gap-2 text-sm text-gray-600">
-        <input type="checkbox" name="remember" class="rounded border-gray-300 text-brand-600">
-        Remember me
-    </label>
-    <button type="submit" class="w-full rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-700">
-        Sign In
-    </button>
+
+    <x-input :label="__('Email')" name="email" type="email" required autofocus dir="ltr" />
+    <x-input :label="__('Password')" name="password" type="password" required />
+
+    <x-checkbox :label="__('Remember me')" name="remember" />
+
+    <x-btn class="w-full">{{ __('Sign In') }}</x-btn>
 </form>
 @endsection

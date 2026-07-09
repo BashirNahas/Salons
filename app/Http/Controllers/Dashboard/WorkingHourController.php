@@ -37,6 +37,6 @@ class WorkingHourController extends Controller
             );
         }
 
-        return redirect()->route('dashboard.working-hours.index')->with('status', 'Working hours updated.');
+        return redirect()->route('dashboard.working-hours.index')->with('status', __('Working hours updated.'));
     }
 }

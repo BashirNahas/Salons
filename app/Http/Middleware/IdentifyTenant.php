@@ -39,10 +39,19 @@ class IdentifyTenant
                 abort(404);
             }
 
-            $salon = Salon::where('slug', $slug)->where('is_active', true)->first();
+            $salon = Salon::where('slug', $slug)->first();
 
             if (! $salon) {
                 abort(404, 'Salon not found.');
+            }
+
+            // Salon exists but is switched off by the super admin or its
+            // subscription has lapsed: serve a friendly unavailable page
+            // for EVERY tenant route (public booking, owner login, ajax).
+            // Returning here means no tenant context is bound, so nothing
+            // downstream can leak data for a suspended salon.
+            if (! $salon->isOperational()) {
+                return response()->view('tenant-unavailable', ['salon' => $salon], 503);
             }
 
             app()->instance('currentSalon', $salon);

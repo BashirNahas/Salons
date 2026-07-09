@@ -26,13 +26,13 @@ class BlockedDateController extends Controller
 
         BlockedDate::firstOrCreate(['date' => $data['date']], ['reason' => $data['reason'] ?? null]);
 
-        return redirect()->route('dashboard.blocked-dates.index')->with('status', 'Date blocked.');
+        return redirect()->route('dashboard.blocked-dates.index')->with('status', __('Date blocked.'));
     }
 
     public function destroy(BlockedDate $blockedDate): RedirectResponse
     {
         $blockedDate->delete();
 
-        return redirect()->route('dashboard.blocked-dates.index')->with('status', 'Blocked date removed.');
+        return redirect()->route('dashboard.blocked-dates.index')->with('status', __('Blocked date removed.'));
     }
 }

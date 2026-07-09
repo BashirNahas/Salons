@@ -8,15 +8,27 @@ use App\Http\Requests\UpdateSalonRequest;
 use App\Models\Salon;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class SalonController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
-        $salons = Salon::withCount('bookings')->with('owner')->latest()->paginate(15);
+        $salons = Salon::withCount('bookings')
+            ->with('owner')
+            ->when($request->filled('q'), function ($query) use ($request) {
+                $term = '%'.$request->string('q').'%';
+                $query->where(fn ($q) => $q
+                    ->where('name', 'like', $term)
+                    ->orWhere('slug', 'like', $term)
+                    ->orWhereHas('owner', fn ($o) => $o->where('email', 'like', $term)->orWhere('name', 'like', $term)));
+            })
+            ->latest()
+            ->paginate(15)
+            ->withQueryString();
 
         return view('admin.salons.index', compact('salons'));
     }
@@ -46,11 +58,13 @@ class SalonController extends Controller
                 'phone' => $data['phone'] ?? null,
                 'address' => $data['address'] ?? null,
                 'description' => $data['description'] ?? null,
+                'subscription_starts_at' => $data['subscription_starts_at'] ?? null,
+                'subscription_ends_at' => $data['subscription_ends_at'] ?? null,
             ]);
         });
 
         return redirect()->route('admin.salons.index')
-            ->with('status', "Salon \"{$salon->name}\" created.")
+            ->with('status', __('Salon ":name" created.', ['name' => $salon->name]))
             ->with('generated_credentials', [
                 'email' => $salon->owner->email,
                 'password' => $generatedPassword,
@@ -76,6 +90,8 @@ class SalonController extends Controller
                 'address' => $data['address'] ?? null,
                 'description' => $data['description'] ?? null,
                 'is_active' => $isActive,
+                'subscription_starts_at' => $data['subscription_starts_at'] ?? null,
+                'subscription_ends_at' => $data['subscription_ends_at'] ?? null,
             ]);
 
             $ownerUpdate = [
@@ -90,7 +106,22 @@ class SalonController extends Controller
             $salon->owner->update($ownerUpdate);
         });
 
-        return redirect()->route('admin.salons.index')->with('status', "Salon \"{$salon->name}\" updated.");
+        return redirect()->route('admin.salons.index')
+            ->with('status', __('Salon ":name" updated.', ['name' => $salon->name]));
+    }
+
+    /**
+     * The super admin's master ON/OFF switch. OFF makes the salon
+     * immediately unreachable (public site, booking, and owner login all
+     * show the "unavailable" page) regardless of subscription dates.
+     */
+    public function toggle(Salon $salon): RedirectResponse
+    {
+        $salon->update(['is_active' => ! $salon->is_active]);
+
+        return back()->with('status', $salon->is_active
+            ? __('Salon ":name" has been activated.', ['name' => $salon->name])
+            : __('Salon ":name" has been deactivated.', ['name' => $salon->name]));
     }
 
     public function destroy(Salon $salon): RedirectResponse
@@ -101,6 +132,7 @@ class SalonController extends Controller
         $salon->delete();
         $owner?->delete();
 
-        return redirect()->route('admin.salons.index')->with('status', "Salon \"{$name}\" deleted.");
+        return redirect()->route('admin.salons.index')
+            ->with('status', __('Salon ":name" deleted.', ['name' => $name]));
     }
 }

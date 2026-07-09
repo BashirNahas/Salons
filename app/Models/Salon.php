@@ -21,6 +21,8 @@ class Salon extends Model
         'address',
         'description',
         'is_active',
+        'subscription_starts_at',
+        'subscription_ends_at',
         'logo',
         'instagram',
         'brand_color',
@@ -30,6 +32,8 @@ class Salon extends Model
     {
         return [
             'is_active' => 'boolean',
+            'subscription_starts_at' => 'date',
+            'subscription_ends_at' => 'date',
         ];
     }
 
@@ -78,5 +82,36 @@ class Salon extends Model
     public function logoUrl(): ?string
     {
         return $this->logo ? route('public.storage', ['path' => $this->logo]) : null;
+    }
+
+    /**
+     * Whether the salon is currently reachable at all — the master switch
+     * (is_active, toggled by the super admin) AND an unexpired
+     * subscription. A null subscription_ends_at means no expiry date is
+     * set, i.e. the subscription never runs out on its own.
+     */
+    public function isOperational(): bool
+    {
+        if (! $this->is_active) {
+            return false;
+        }
+
+        return $this->subscription_ends_at === null
+            || $this->subscription_ends_at->endOfDay()->isFuture();
+    }
+
+    public function subscriptionExpired(): bool
+    {
+        return $this->subscription_ends_at !== null
+            && $this->subscription_ends_at->endOfDay()->isPast();
+    }
+
+    public function subscriptionDaysLeft(): ?int
+    {
+        if ($this->subscription_ends_at === null) {
+            return null;
+        }
+
+        return max(0, (int) now()->startOfDay()->diffInDays($this->subscription_ends_at->startOfDay(), false));
     }
 }

@@ -41,7 +41,7 @@ class EmployeeController extends Controller
         ]);
 
         return redirect()->route('dashboard.employees.index')
-            ->with('status', 'Employee added successfully.');
+            ->with('status', __('Employee added successfully.'));
     }
 
     public function edit(Employee $employee): View
@@ -68,7 +68,7 @@ class EmployeeController extends Controller
         ]);
 
         return redirect()->route('dashboard.employees.index')
-            ->with('status', 'Employee updated.');
+            ->with('status', __('Employee updated.'));
     }
 
     public function destroy(Employee $employee): RedirectResponse
@@ -76,6 +76,6 @@ class EmployeeController extends Controller
         $employee->delete();
 
         return redirect()->route('dashboard.employees.index')
-            ->with('status', 'Employee removed.');
+            ->with('status', __('Employee removed.'));
     }
 }

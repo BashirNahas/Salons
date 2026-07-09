@@ -26,7 +26,7 @@ class ServiceController extends Controller
     {
         Service::create($request->validated());
 
-        return redirect()->route('dashboard.services.index')->with('status', 'Service created.');
+        return redirect()->route('dashboard.services.index')->with('status', __('Service created.'));
     }
 
     public function edit(Service $service): View
@@ -41,13 +41,13 @@ class ServiceController extends Controller
 
         $service->update($data);
 
-        return redirect()->route('dashboard.services.index')->with('status', 'Service updated.');
+        return redirect()->route('dashboard.services.index')->with('status', __('Service updated.'));
     }
 
     public function destroy(Service $service): RedirectResponse
     {
         $service->delete();
 
-        return redirect()->route('dashboard.services.index')->with('status', 'Service deleted.');
+        return redirect()->route('dashboard.services.index')->with('status', __('Service deleted.'));
     }
 }

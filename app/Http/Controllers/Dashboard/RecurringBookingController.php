@@ -43,7 +43,7 @@ class RecurringBookingController extends Controller
         $result = $this->generator->generate($recurring);
 
         return redirect()->route('dashboard.recurring-bookings.index')
-            ->with('status', $this->summarize('Recurring booking created.', $result));
+            ->with('status', $this->summarize(__('Recurring booking created.'), $result));
     }
 
     public function edit(RecurringBooking $recurringBooking): View
@@ -63,7 +63,7 @@ class RecurringBookingController extends Controller
         $result = $this->generator->regenerate($recurringBooking);
 
         return redirect()->route('dashboard.recurring-bookings.index')
-            ->with('status', $this->summarize('Recurring booking updated.', $result));
+            ->with('status', $this->summarize(__('Recurring booking updated.'), $result));
     }
 
     public function destroy(RecurringBooking $recurringBooking): RedirectResponse
@@ -72,7 +72,7 @@ class RecurringBookingController extends Controller
         $recurringBooking->delete();
 
         return redirect()->route('dashboard.recurring-bookings.index')
-            ->with('status', 'Recurring booking cancelled and upcoming appointments removed.');
+            ->with('status', __('Recurring booking cancelled and upcoming appointments removed.'));
     }
 
     private function validated(Request $request): array
@@ -106,10 +106,10 @@ class RecurringBookingController extends Controller
      */
     private function summarize(string $prefix, array $result): string
     {
-        $message = "{$prefix} {$result['created']} upcoming appointment(s) scheduled.";
+        $message = $prefix.' '.__(':count upcoming appointments scheduled.', ['count' => $result['created']]);
 
         if ($result['skipped'] > 0) {
-            $message .= " {$result['skipped']} occurrence(s) skipped because that time was already booked.";
+            $message .= ' '.__(':count occurrences skipped because that time was already booked.', ['count' => $result['skipped']]);
         }
 
         return $message;

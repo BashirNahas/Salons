@@ -27,6 +27,8 @@ class UpdateSalonRequest extends FormRequest
             'address' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:2000'],
             'is_active' => ['sometimes', 'boolean'],
+            'subscription_starts_at' => ['nullable', 'date'],
+            'subscription_ends_at' => ['nullable', 'date', 'after_or_equal:subscription_starts_at'],
             'owner_name' => ['required', 'string', 'max:255'],
             'owner_email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($salon->owner_id)],
             'owner_password' => ['nullable', 'string', 'min:8'],

@@ -1,18 +1,20 @@
 @extends('layouts.admin')
 
-@section('title', 'Add Salon')
-@section('page-title', 'Add Salon')
+@section('title', __('Add Salon'))
+@section('page-title', __('Add Salon'))
 
 @section('admin-content')
-<div class="max-w-3xl rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200">
-    <form method="POST" action="{{ route('admin.salons.store') }}">
-        @csrf
-        @include('admin.salons._form')
+<div class="mx-auto max-w-3xl">
+    <x-card>
+        <form method="POST" action="{{ route('admin.salons.store') }}">
+            @csrf
+            @include('admin.salons._form')
 
-        <div class="mt-6 flex justify-end gap-3">
-            <a href="{{ route('admin.salons.index') }}" class="rounded-lg px-4 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-100">Cancel</a>
-            <button type="submit" class="rounded-lg bg-gray-900 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-800">Create Salon</button>
-        </div>
-    </form>
+            <div class="mt-6 flex items-center justify-end gap-3 border-t border-gray-100 pt-5">
+                <x-btn href="{{ route('admin.salons.index') }}" variant="secondary">{{ __('Cancel') }}</x-btn>
+                <x-btn variant="dark">{{ __('Create Salon') }}</x-btn>
+            </div>
+        </form>
+    </x-card>
 </div>
 @endsection

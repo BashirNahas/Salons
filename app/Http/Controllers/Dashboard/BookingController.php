@@ -92,7 +92,7 @@ class BookingController extends Controller
 
         if ($overlaps) {
             return back()->withInput()->withErrors([
-                'time' => 'This time overlaps with an existing appointment. Please choose another time.',
+                'time' => __('This time overlaps with an existing appointment. Please choose another time.'),
             ]);
         }
 
@@ -107,20 +107,20 @@ class BookingController extends Controller
             'source' => Booking::SOURCE_MANUAL,
         ]);
 
-        return redirect()->route('dashboard.bookings.index')->with('status', 'Appointment added.');
+        return redirect()->route('dashboard.bookings.index')->with('status', __('Appointment added.'));
     }
 
     public function approve(Booking $booking): RedirectResponse
     {
         $booking->update(['status' => Booking::STATUS_APPROVED]);
 
-        return back()->with('status', 'Booking approved.');
+        return back()->with('status', __('Booking approved.'));
     }
 
     public function reject(Booking $booking): RedirectResponse
     {
         $booking->update(['status' => Booking::STATUS_REJECTED]);
 
-        return back()->with('status', 'Booking rejected.');
+        return back()->with('status', __('Booking rejected.'));
     }
 }

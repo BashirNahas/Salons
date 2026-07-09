@@ -1,65 +1,45 @@
 @php($salon = $salon ?? null)
 
-<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+<div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+    <x-input :label="__('Salon Name')" name="name" :value="$salon?->name" required />
+
     <div>
-        <label class="block text-sm font-medium text-gray-700">Salon Name</label>
-        <input type="text" name="name" value="{{ old('name', $salon?->name) }}" required
-               class="mt-1 w-full rounded-lg border-gray-300 shadow-sm focus:border-brand-500 focus:ring-brand-500">
-    </div>
-    <div>
-        <label class="block text-sm font-medium text-gray-700">Subdomain (slug)</label>
-        <div class="mt-1 flex rounded-lg shadow-sm">
+        <label class="mb-1.5 block text-sm font-medium text-gray-700">{{ __('Subdomain (slug)') }} <span class="text-red-500">*</span></label>
+        <div dir="ltr" class="flex rounded-lg shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-brand-600">
             <input type="text" name="slug" value="{{ old('slug', $salon?->slug) }}" required
-                   class="w-full rounded-l-lg border-gray-300 focus:border-brand-500 focus:ring-brand-500">
-            <span class="inline-flex items-center rounded-r-lg border border-l-0 border-gray-300 bg-gray-50 px-3 text-sm text-gray-500">.{{ config('tenancy.central_domain') }}</span>
+                   class="w-full rounded-s-lg border-0 bg-transparent py-2.5 text-sm focus:ring-0">
+            <span class="flex items-center rounded-e-lg border-s border-gray-200 bg-gray-50 px-3 text-sm text-gray-500">.{{ config('tenancy.central_domain') }}</span>
         </div>
+        @error('slug') <p class="mt-1.5 text-xs font-medium text-red-600">{{ $message }}</p> @enderror
     </div>
-    <div>
-        <label class="block text-sm font-medium text-gray-700">Phone</label>
-        <input type="text" name="phone" value="{{ old('phone', $salon?->phone) }}"
-               class="mt-1 w-full rounded-lg border-gray-300 shadow-sm focus:border-brand-500 focus:ring-brand-500">
-    </div>
-    <div>
-        <label class="block text-sm font-medium text-gray-700">Address</label>
-        <input type="text" name="address" value="{{ old('address', $salon?->address) }}"
-               class="mt-1 w-full rounded-lg border-gray-300 shadow-sm focus:border-brand-500 focus:ring-brand-500">
-    </div>
-    <div class="sm:col-span-2">
-        <label class="block text-sm font-medium text-gray-700">Description</label>
-        <textarea name="description" rows="3"
-                  class="mt-1 w-full rounded-lg border-gray-300 shadow-sm focus:border-brand-500 focus:ring-brand-500">{{ old('description', $salon?->description) }}</textarea>
+
+    <x-phone-input :label="__('Phone')" name="phone" :value="$salon?->phone" />
+    <x-input :label="__('Address')" name="address" :value="$salon?->address" />
+    <x-textarea :label="__('Description')" name="description" :value="$salon?->description" rows="3" class="sm:col-span-2" />
+</div>
+
+<div class="mt-6 border-t border-gray-100 pt-6">
+    <h3 class="mb-1 text-sm font-semibold text-gray-900">{{ __('Subscription') }}</h3>
+    <p class="mb-4 text-xs text-gray-400">{{ __('Leave the end date empty for an unlimited subscription. After the end date, the salon is automatically disabled.') }}</p>
+    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+        <x-input :label="__('Subscription Start')" name="subscription_starts_at" type="date" :value="$salon?->subscription_starts_at?->toDateString()" optional />
+        <x-input :label="__('Subscription End')" name="subscription_ends_at" type="date" :value="$salon?->subscription_ends_at?->toDateString()" optional />
     </div>
 
     @if ($salon)
-        <div class="sm:col-span-2">
-            <label class="flex items-center gap-2 text-sm text-gray-700">
-                <input type="hidden" name="is_active" value="0">
-                <input type="checkbox" name="is_active" value="1" class="rounded border-gray-300 text-brand-600" {{ old('is_active', $salon->is_active) ? 'checked' : '' }}>
-                Active (visible &amp; bookable)
-            </label>
+        <div class="mt-5">
+            <x-checkbox :label="__('Salon is ON (reachable by owner and customers)')" name="is_active" :checked="$salon->is_active" hidden
+                        :hint="__('Turning this off makes the salon immediately unavailable, regardless of the subscription dates.')" />
         </div>
     @endif
 </div>
 
-<hr class="my-6 border-gray-200">
-
-<h3 class="mb-3 text-sm font-semibold text-gray-700">Owner Account</h3>
-<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-    <div>
-        <label class="block text-sm font-medium text-gray-700">Owner Name</label>
-        <input type="text" name="owner_name" value="{{ old('owner_name', $salon?->owner->name) }}" required
-               class="mt-1 w-full rounded-lg border-gray-300 shadow-sm focus:border-brand-500 focus:ring-brand-500">
-    </div>
-    <div>
-        <label class="block text-sm font-medium text-gray-700">Owner Email</label>
-        <input type="email" name="owner_email" value="{{ old('owner_email', $salon?->owner->email) }}" required
-               class="mt-1 w-full rounded-lg border-gray-300 shadow-sm focus:border-brand-500 focus:ring-brand-500">
-    </div>
-    <div class="sm:col-span-2">
-        <label class="block text-sm font-medium text-gray-700">
-            Password {{ $salon ? '(leave blank to keep current)' : '(leave blank to auto-generate)' }}
-        </label>
-        <input type="password" name="owner_password" autocomplete="new-password"
-               class="mt-1 w-full rounded-lg border-gray-300 shadow-sm focus:border-brand-500 focus:ring-brand-500">
+<div class="mt-6 border-t border-gray-100 pt-6">
+    <h3 class="mb-4 text-sm font-semibold text-gray-900">{{ __('Owner Account') }}</h3>
+    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+        <x-input :label="__('Owner Name')" name="owner_name" :value="$salon?->owner->name" required />
+        <x-input :label="__('Owner Email')" name="owner_email" type="email" :value="$salon?->owner->email" required dir="ltr" />
+        <x-input :label="__('Password')" name="owner_password" type="password" autocomplete="new-password" class="sm:col-span-2"
+                 :hint="$salon ? __('Leave blank to keep the current password.') : __('Leave blank to generate a secure password automatically.')" />
     </div>
 </div>

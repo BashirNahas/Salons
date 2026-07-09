@@ -1,50 +1,46 @@
 @extends('layouts.base')
 
 @section('content')
-<div class="min-h-screen" style="background:#fafafa;">
-    <header class="sticky top-0 z-30 border-b border-gray-100 bg-white/95 backdrop-blur-sm">
-        <div class="mx-auto flex max-w-5xl items-center justify-between px-4 py-3 sm:px-6">
-            <a href="{{ route('public.salon.show') }}" class="flex items-center gap-2.5">
-                @if(currentSalon()->logo)
-                    <img src="{{ currentSalon()->logoUrl() }}" alt="{{ currentSalon()->name }}" class="h-8 w-8 rounded-full object-cover">
+<div class="flex min-h-screen flex-col bg-gray-50">
+    <header class="sticky top-0 z-30 border-b border-gray-950/5 bg-white/90 backdrop-blur">
+        <div class="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
+            <a href="{{ route('public.salon.show') }}" class="flex min-w-0 items-center gap-2.5">
+                @if (currentSalon()->logo)
+                    <img src="{{ currentSalon()->logoUrl() }}" alt="{{ currentSalon()->name }}" class="h-9 w-9 shrink-0 rounded-xl object-cover ring-1 ring-gray-950/10">
                 @else
-                    <div class="flex h-8 w-8 items-center justify-center rounded-full bg-brand-600 text-xs font-bold text-white">
+                    <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-600 text-sm font-semibold text-white">
                         {{ mb_strtoupper(mb_substr(currentSalon()->name, 0, 1)) }}
                     </div>
                 @endif
-                <span class="text-base font-bold text-gray-900">{{ currentSalon()->name }}</span>
+                <span class="truncate text-sm font-semibold tracking-tight text-gray-900 sm:text-base">{{ currentSalon()->name }}</span>
             </a>
-            <div class="flex items-center gap-3">
-                <div class="flex items-center rounded-full bg-gray-100 p-0.5 text-xs font-medium">
-                    <a href="{{ route('public.locale.update', 'en') }}"
-                       class="rounded-full px-2.5 py-1 transition-colors {{ app()->getLocale() === 'en' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500' }}">EN</a>
-                    <a href="{{ route('public.locale.update', 'ar') }}"
-                       class="rounded-full px-2.5 py-1 transition-colors {{ app()->getLocale() === 'ar' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500' }}">عربي</a>
-                </div>
-                <a href="{{ route('public.booking.create') }}" class="rounded-full bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-700 transition-colors">
-                    {{ __('Book Now') }}
-                </a>
+            <div class="flex shrink-0 items-center gap-2.5">
+                <x-lang-switcher />
+                <x-btn href="{{ route('public.booking.create') }}" size="sm" class="!rounded-full !px-4">{{ __('Book Now') }}</x-btn>
             </div>
         </div>
     </header>
 
-    <main class="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-10">
+    <main class="mx-auto w-full max-w-5xl flex-1 px-4 py-6 sm:px-6 sm:py-10">
         @include('partials.flash')
         @yield('public-content')
     </main>
 
-    <footer class="border-t border-gray-100 bg-white py-8 mt-12">
+    <footer class="mt-12 border-t border-gray-950/5 bg-white py-8">
         <div class="mx-auto max-w-5xl px-4 sm:px-6">
-            <div class="flex flex-col items-center gap-2 text-center sm:flex-row sm:justify-between sm:text-left">
+            <div class="flex flex-col items-center gap-2 text-center sm:flex-row sm:justify-between sm:text-start">
                 <div>
-                    <p class="font-semibold text-gray-800">{{ currentSalon()->name }}</p>
-                    @if(currentSalon()->address)
-                        <p class="text-sm text-gray-500">{{ currentSalon()->address }}</p>
+                    <p class="text-sm font-semibold text-gray-900">{{ currentSalon()->name }}</p>
+                    @if (currentSalon()->address)
+                        <p class="mt-0.5 text-sm text-gray-500">{{ currentSalon()->address }}</p>
                     @endif
                 </div>
-                <div class="text-sm text-gray-400">
-                    @if(currentSalon()->phone)
-                        <a href="tel:{{ currentSalon()->phone }}" class="hover:text-brand-600">{{ currentSalon()->phone }}</a>
+                <div class="flex items-center gap-4 text-sm text-gray-400">
+                    @if (currentSalon()->instagram)
+                        <a href="https://instagram.com/{{ currentSalon()->instagram }}" target="_blank" rel="noopener" class="transition hover:text-brand-600">Instagram</a>
+                    @endif
+                    @if (currentSalon()->phone)
+                        <a href="tel:{{ currentSalon()->phone }}" dir="ltr" class="transition hover:text-brand-600">{{ currentSalon()->phone }}</a>
                     @endif
                 </div>
             </div>

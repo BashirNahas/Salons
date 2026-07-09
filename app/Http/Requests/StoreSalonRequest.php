@@ -24,6 +24,8 @@ class StoreSalonRequest extends FormRequest
             'phone' => ['nullable', 'string', 'max:30'],
             'address' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:2000'],
+            'subscription_starts_at' => ['nullable', 'date'],
+            'subscription_ends_at' => ['nullable', 'date', 'after_or_equal:subscription_starts_at'],
             'owner_name' => ['required', 'string', 'max:255'],
             'owner_email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'owner_password' => ['nullable', 'string', 'min:8'],

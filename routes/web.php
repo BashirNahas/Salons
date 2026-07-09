@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 use App\Http\Controllers\Admin\BookingController as AdminBookingController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\SalonController as AdminSalonController;
+use App\Http\Controllers\LocaleController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,6 +22,8 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
+Route::get('lang/{locale}', [LocaleController::class, 'update'])->name('locale.update');
+
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware('guest')->group(function () {
         Route::get('login', [AdminAuthController::class, 'create'])->name('login');
@@ -33,6 +36,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
 
         Route::resource('salons', AdminSalonController::class)->except(['show']);
+        Route::post('salons/{salon}/toggle', [AdminSalonController::class, 'toggle'])->name('salons.toggle');
 
         Route::get('bookings', [AdminBookingController::class, 'index'])->name('bookings.index');
     });
