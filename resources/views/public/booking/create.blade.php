@@ -26,7 +26,7 @@
                     <div :class="currentStep >= {{ $step['num'] }} ? 'bg-brand-600 text-white' : 'bg-gray-200 text-gray-500'"
                          class="flex h-8 w-8 items-center justify-center rounded-full text-xs font-semibold transition-colors">
                         <template x-if="currentStep > {{ $step['num'] }}">
-                            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                            <svg aria-hidden="true" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
                         </template>
                         <template x-if="currentStep <= {{ $step['num'] }}">
                             <span>{{ $step['num'] }}</span>
@@ -96,7 +96,7 @@
                         :class="selectedEmployee === null ? 'ring-2 ring-brand-600 bg-brand-50/60' : 'ring-1 ring-gray-950/5 bg-white hover:ring-brand-300'"
                         class="flex flex-col items-center rounded-2xl px-3 py-5 shadow-card transition">
                     <div class="flex h-14 w-14 items-center justify-center rounded-full bg-gray-100">
-                        <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/></svg>
+                        <svg aria-hidden="true" class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/></svg>
                     </div>
                     <p class="mt-2.5 text-sm font-medium text-gray-800">{{ __('Any Staff') }}</p>
                     <p class="mt-0.5 text-xs text-gray-400">{{ __('No preference') }}</p>
@@ -201,110 +201,21 @@
     </form>
 </div>
 
+{{-- Page data for the wizard (JSON only — behavior lives in assets/js/booking-wizard.js) --}}
+@php
+    $wizardConfig = [
+        'hasEmployees' => $employees->isNotEmpty(),
+        'slotsUrl' => route('public.booking.slots'),
+        'preselectedService' => request('service'),
+        'serviceNames' => $services->pluck('name', 'id'),
+        'staffNames' => $employees->pluck('name', 'id'),
+        'staffLabel' => __('Staff:'),
+        'dateLocale' => app()->getLocale() === 'ar' ? 'ar' : 'en-US',
+    ];
+@endphp
+<script type="application/json" id="booking-wizard-config">@json($wizardConfig)</script>
+
 @push('head')
-<script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-<script>
-function bookingWizard() {
-    const hasEmployees = @json($employees->isNotEmpty());
-    const slotsUrl = @json(route('public.booking.slots'));
-    const preselectedService = @json(request('service'));
-
-    const serviceNames = @json($services->pluck('name', 'id'));
-    const staffNames = @json($employees->pluck('name', 'id'));
-    const staffLabel = @json(__('Staff:'));
-    const dateLocale = @json(app()->getLocale() === 'ar' ? 'ar' : 'en-US');
-
-    return {
-        currentStep: 1,
-        dateTimeStep: hasEmployees ? 3 : 2,
-        infoStep: hasEmployees ? 4 : 3,
-
-        selectedService: preselectedService || null,
-        selectedServiceDuration: null,
-        selectedEmployee: null,
-        selectedDate: '',
-        selectedTime: '',
-
-        slots: [],
-        slotsState: 'idle', // idle | loading | loaded | empty | error
-
-        get serviceName() {
-            return this.selectedService ? (serviceNames[this.selectedService] || '') : '';
-        },
-        get staffName() {
-            if (!this.selectedEmployee) return '';
-            return staffNames[this.selectedEmployee] || '';
-        },
-        get staffLine() {
-            return this.staffName ? `${staffLabel} ${this.staffName}` : '';
-        },
-
-        init() {
-            if (preselectedService) {
-                this.selectedService = preselectedService;
-                this.currentStep = 2;
-            }
-        },
-
-        selectService(id, duration) {
-            this.selectedService = id;
-            this.selectedServiceDuration = duration;
-        },
-
-        selectEmployee(id) {
-            this.selectedEmployee = id;
-        },
-
-        nextStep() {
-            this.currentStep++;
-        },
-
-        prevStep() {
-            this.currentStep--;
-            if (this.currentStep === this.dateTimeStep) {
-                this.selectedTime = '';
-            }
-        },
-
-        today() {
-            return new Date().toISOString().split('T')[0];
-        },
-
-        formatDate(dateStr) {
-            if (!dateStr) return '';
-            const d = new Date(dateStr + 'T00:00:00');
-            return d.toLocaleDateString(dateLocale, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-        },
-
-        loadSlots() {
-            if (!this.selectedService || !this.selectedDate) return;
-
-            this.selectedTime = '';
-            this.slots = [];
-            this.slotsState = 'loading';
-
-            let url = `${slotsUrl}?service_id=${encodeURIComponent(this.selectedService)}&date=${encodeURIComponent(this.selectedDate)}`;
-            if (this.selectedEmployee) {
-                url += `&employee_id=${encodeURIComponent(this.selectedEmployee)}`;
-            }
-
-            fetch(url)
-                .then(r => r.json())
-                .then(data => {
-                    if (!data.slots || data.slots.length === 0) {
-                        this.slots = [];
-                        this.slotsState = 'empty';
-                        return;
-                    }
-                    this.slots = data.slots;
-                    this.slotsState = 'loaded';
-                })
-                .catch(() => {
-                    this.slotsState = 'error';
-                });
-        },
-    };
-}
-</script>
+<script defer src="{{ asset('assets/js/booking-wizard.js') }}?v=20260710"></script>
 @endpush
 @endsection

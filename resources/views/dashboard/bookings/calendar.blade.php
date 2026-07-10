@@ -7,13 +7,13 @@
 
 <div class="mb-5 flex items-center justify-between">
     <x-btn href="{{ route('dashboard.bookings.calendar', ['month' => $month->clone()->subMonth()->format('Y-m-01')]) }}" variant="secondary" size="sm">
-        <svg class="h-4 w-4 rtl:rotate-180" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+        <svg aria-hidden="true" class="h-4 w-4 rtl:rotate-180" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
         {{ __('Previous') }}
     </x-btn>
     <h2 class="text-base font-semibold tracking-tight text-gray-900">{{ $month->translatedFormat('F Y') }}</h2>
     <x-btn href="{{ route('dashboard.bookings.calendar', ['month' => $month->clone()->addMonth()->format('Y-m-01')]) }}" variant="secondary" size="sm">
         {{ __('Next') }}
-        <svg class="h-4 w-4 rtl:rotate-180" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+        <svg aria-hidden="true" class="h-4 w-4 rtl:rotate-180" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
     </x-btn>
 </div>
 
