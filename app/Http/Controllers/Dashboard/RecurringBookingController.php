@@ -1,0 +1,117 @@
+<?php
+
+namespace App\Http\Controllers\Dashboard;
+
+use App\Http\Controllers\Controller;
+use App\Models\Employee;
+use App\Models\RecurringBooking;
+use App\Models\Service;
+use App\Services\RecurringBookingGenerator;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Illuminate\View\View;
+
+class RecurringBookingController extends Controller
+{
+    public function __construct(private readonly RecurringBookingGenerator $generator) {}
+
+    public function index(): View
+    {
+        $recurringBookings = RecurringBooking::with(['service', 'employee'])
+            ->orderBy('day_of_week')
+            ->orderBy('time')
+            ->get();
+
+        return view('dashboard.recurring-bookings.index', compact('recurringBookings'));
+    }
+
+    public function create(): View
+    {
+        $services = Service::where('is_active', true)->orderBy('name')->get();
+        $employees = Employee::where('is_active', true)->orderBy('sort_order')->orderBy('name')->get();
+
+        return view('dashboard.recurring-bookings.create', compact('services', 'employees'));
+    }
+
+    public function store(Request $request): RedirectResponse
+    {
+        $data = $this->validated($request);
+
+        $recurring = RecurringBooking::create($data);
+
+        $result = $this->generator->generate($recurring);
+
+        return redirect()->route('dashboard.recurring-bookings.index')
+            ->with('status', $this->summarize(__('Recurring booking created.'), $result));
+    }
+
+    public function edit(RecurringBooking $recurringBooking): View
+    {
+        $services = Service::where('is_active', true)->orderBy('name')->get();
+        $employees = Employee::where('is_active', true)->orderBy('sort_order')->orderBy('name')->get();
+
+        return view('dashboard.recurring-bookings.edit', compact('recurringBooking', 'services', 'employees'));
+    }
+
+    public function update(Request $request, RecurringBooking $recurringBooking): RedirectResponse
+    {
+        $data = $this->validated($request);
+
+        $recurringBooking->update($data);
+
+        $result = $this->generator->regenerate($recurringBooking);
+
+        return redirect()->route('dashboard.recurring-bookings.index')
+            ->with('status', $this->summarize(__('Recurring booking updated.'), $result));
+    }
+
+    public function destroy(RecurringBooking $recurringBooking): RedirectResponse
+    {
+        $this->generator->removeFutureOccurrences($recurringBooking);
+        $recurringBooking->delete();
+
+        return redirect()->route('dashboard.recurring-bookings.index')
+            ->with('status', __('Recurring booking cancelled and upcoming appointments removed.'));
+    }
+
+    private function validated(Request $request): array
+    {
+        $salonId = currentSalon()->id;
+
+        $data = $request->validate([
+            'service_id' => ['required', 'integer', Rule::exists('services', 'id')->where('salon_id', $salonId)],
+            'employee_id' => ['nullable', 'integer', Rule::exists('employees', 'id')->where('salon_id', $salonId)],
+            'customer_name' => ['required', 'string', 'max:255'],
+            'customer_phone' => ['required', 'string', 'max:30'],
+            'day_of_week' => ['required', 'integer', 'between:0,6'],
+            'time' => ['required', 'date_format:H:i'],
+            'start_date' => ['required', 'date'],
+            'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
+            'notes' => ['nullable', 'string', 'max:1000'],
+        ]);
+
+        // No default here: this method is shared by store() and update().
+        // An unchecked checkbox is absent from the request, so defaulting to
+        // true would make it impossible to pause an existing recurring
+        // booking from the edit form. The create form ships with the box
+        // checked, so new records are active by default anyway.
+        $data['is_active'] = $request->boolean('is_active');
+
+        return $data;
+    }
+
+    /**
+     * @param  array{created: int, skipped: int}  $result
+     */
+    private function summarize(string $prefix, array $result): string
+    {
+        $message = $prefix.' '.__(':count upcoming appointments scheduled.', ['count' => $result['created']]);
+
+        if ($result['skipped'] > 0) {
+            $message .= ' '.__(':count occurrences skipped because that time was already booked.', ['count' => $result['skipped']]);
+        }
+
+        return $message;
+    }
+}
