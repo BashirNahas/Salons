@@ -10,3 +10,4 @@
 CHANGELOG.md export-ignore
 .styleci.yml export-ignore
 deploy/ export-ignore
+mobile/ export-ignore

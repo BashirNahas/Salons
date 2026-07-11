@@ -10,6 +10,18 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
         then: function () {
+            // Stateless JSON API for the mobile apps. Registered first and
+            // with no domain constraint so it answers on the central domain
+            // and salon subdomains alike; the /api/v1 prefix can never
+            // collide with a tenant page path.
+            Route::prefix('api/v1')
+                ->middleware([
+                    'throttle:api',
+                    \Illuminate\Routing\Middleware\SubstituteBindings::class,
+                    \App\Http\Middleware\SetApiLocale::class,
+                ])
+                ->group(__DIR__.'/../routes/api.php');
+
             // Tenant subdomain routes are registered BEFORE the central
             // routes. Laravel matches routes in registration order (first
             // match wins), and the central "/" homepage route has no domain
@@ -80,5 +92,9 @@ return Application::configure(basePath: dirname(__DIR__))
         );
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+        // API consumers always get JSON errors, even without an explicit
+        // Accept header (some HTTP clients omit it).
+        $exceptions->shouldRenderJsonWhen(
+            fn ($request) => $request->is('api/*') || $request->expectsJson()
+        );
     })->create();
