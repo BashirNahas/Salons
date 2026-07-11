@@ -7,13 +7,12 @@
 
 <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
     <form method="GET" class="relative">
-        <svg aria-hidden="true" class="pointer-events-none absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
+        <svg class="pointer-events-none absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
         <input type="search" name="q" value="{{ request('q') }}" placeholder="{{ __('Search salons…') }}"
-               aria-label="{{ __('Search salons…') }}"
                class="w-64 rounded-lg border-0 py-2 ps-9 text-sm shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-brand-600">
     </form>
     <x-btn href="{{ route('admin.salons.create') }}" variant="dark" size="sm">
-        <svg aria-hidden="true" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
         {{ __('Add Salon') }}
     </x-btn>
 </div>
@@ -21,7 +20,7 @@
 @if ($salons->isEmpty())
     <x-empty-state :title="__('No salons found')" :description="__('Create the first salon to get started.')">
         <x-slot:icon>
-            <svg aria-hidden="true" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21"/></svg>
+            <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21"/></svg>
         </x-slot:icon>
         <x-slot:action>
             <x-btn href="{{ route('admin.salons.create') }}" variant="dark" size="sm">{{ __('Add Salon') }}</x-btn>
@@ -32,12 +31,12 @@
         <table class="min-w-full divide-y divide-gray-100 text-sm">
             <thead>
                 <tr class="text-[11px] font-semibold uppercase tracking-wider text-gray-400">
-                    <th scope="col" class="px-5 py-3 text-start">{{ __('Salon') }}</th>
-                    <th scope="col" class="px-5 py-3 text-start">{{ __('Owner') }}</th>
-                    <th scope="col" class="hidden px-5 py-3 text-start lg:table-cell">{{ __('Bookings') }}</th>
-                    <th scope="col" class="px-5 py-3 text-start">{{ __('Subscription') }}</th>
-                    <th scope="col" class="px-5 py-3 text-start">{{ __('Status') }}</th>
-                    <th scope="col" class="px-5 py-3"></th>
+                    <th class="px-5 py-3 text-start">{{ __('Salon') }}</th>
+                    <th class="px-5 py-3 text-start">{{ __('Owner') }}</th>
+                    <th class="hidden px-5 py-3 text-start lg:table-cell">{{ __('Bookings') }}</th>
+                    <th class="px-5 py-3 text-start">{{ __('Subscription') }}</th>
+                    <th class="px-5 py-3 text-start">{{ __('Status') }}</th>
+                    <th class="px-5 py-3"></th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-50">
@@ -78,7 +77,7 @@
                             <div class="flex items-center justify-end gap-1">
                                 <x-btn href="{{ route('admin.salons.edit', $salon) }}" variant="ghost" size="sm">{{ __('Edit') }}</x-btn>
                                 <form method="POST" action="{{ route('admin.salons.destroy', $salon) }}"
-                                      data-confirm="{{ __('Delete this salon and its owner account? This cannot be undone.') }}">
+                                      onsubmit="return confirm(@js(__('Delete this salon and its owner account? This cannot be undone.')));">
                                     @csrf
                                     @method('DELETE')
                                     <x-btn variant="ghost" size="sm" class="!text-red-600">{{ __('Delete') }}</x-btn>

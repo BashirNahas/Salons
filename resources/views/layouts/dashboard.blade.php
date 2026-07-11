@@ -30,17 +30,15 @@
 @endphp
 
 @section('content')
-<a href="#main-content" class="skip-link">{{ __('Skip to content') }}</a>
 <div x-data="{ sidebarOpen: false }" class="flex min-h-screen bg-gray-50">
     {{-- Mobile backdrop --}}
     <div x-show="sidebarOpen" x-cloak @click="sidebarOpen = false"
          class="fixed inset-0 z-30 bg-gray-950/40 backdrop-blur-sm md:hidden"
-         x-transition.opacity aria-hidden="true"></div>
+         x-transition.opacity></div>
 
     {{-- Sidebar --}}
     <aside :class="sidebarOpen ? 'translate-x-0' : 'max-md:ltr:-translate-x-full max-md:rtl:translate-x-full'"
-           class="fixed inset-y-0 start-0 z-40 flex w-64 shrink-0 flex-col border-e border-gray-200 bg-white transition-transform duration-300 ease-in-out md:relative"
-           aria-label="{{ __('Main navigation') }}">
+           class="fixed inset-y-0 start-0 z-40 flex w-64 shrink-0 flex-col border-e border-gray-200 bg-white transition-transform duration-300 ease-in-out md:relative">
 
         <div class="flex items-center gap-3 border-b border-gray-100 px-5 py-4">
             @if (currentSalon()->logo)
@@ -66,8 +64,8 @@
                                 'group flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition',
                                 'bg-brand-50 text-brand-700' => request()->routeIs($item['pattern']),
                                 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' => ! request()->routeIs($item['pattern']),
-                            ]) @if (request()->routeIs($item['pattern'])) aria-current="page" @endif>
-                                <svg aria-hidden="true" @class(['h-[18px] w-[18px] shrink-0', 'text-brand-600' => request()->routeIs($item['pattern']), 'text-gray-400 group-hover:text-gray-500' => ! request()->routeIs($item['pattern'])])
+                            ])>
+                                <svg @class(['h-[18px] w-[18px] shrink-0', 'text-brand-600' => request()->routeIs($item['pattern']), 'text-gray-400 group-hover:text-gray-500' => ! request()->routeIs($item['pattern'])])
                                      fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="{{ $item['icon'] }}"/>
                                 </svg>
@@ -81,7 +79,7 @@
             <div>
                 <a href="{{ currentSalon()->url() }}" target="_blank"
                    class="group flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition hover:bg-gray-50 hover:text-gray-900">
-                    <svg aria-hidden="true" class="h-[18px] w-[18px] shrink-0 text-gray-400 group-hover:text-gray-500" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                    <svg class="h-[18px] w-[18px] shrink-0 text-gray-400 group-hover:text-gray-500" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                     {{ __('View Public Page') }}
                 </a>
             </div>
@@ -98,9 +96,9 @@
                 </div>
                 <form method="POST" action="{{ route('dashboard.logout') }}">
                     @csrf
-                    <button type="submit" title="{{ __('Log out') }}" aria-label="{{ __('Log out') }}"
+                    <button type="submit" title="{{ __('Log out') }}"
                             class="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 transition hover:bg-gray-100 hover:text-gray-700">
-                        <svg aria-hidden="true" class="h-4 w-4 rtl:rotate-180" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                        <svg class="h-4 w-4 rtl:rotate-180" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
                     </button>
                 </form>
             </div>
@@ -112,7 +110,7 @@
         <header class="sticky top-0 z-20 flex items-center justify-between gap-3 border-b border-gray-200 bg-white/90 px-4 py-3 backdrop-blur md:px-8">
             <div class="flex min-w-0 items-center gap-3">
                 <button @click="sidebarOpen = true" class="rounded-lg p-1.5 text-gray-500 hover:bg-gray-100 md:hidden" aria-label="{{ __('Open menu') }}">
-                    <svg aria-hidden="true" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
                 </button>
                 <h1 class="truncate text-base font-semibold tracking-tight text-gray-900 md:text-lg">@yield('page-title', __('Dashboard'))</h1>
             </div>
@@ -122,7 +120,7 @@
             </div>
         </header>
 
-        <main id="main-content" class="flex-1 px-4 py-6 md:px-8 md:py-8" tabindex="-1">
+        <main class="flex-1 px-4 py-6 md:px-8 md:py-8">
             <div class="mx-auto max-w-6xl">
                 @include('partials.flash')
                 @yield('dashboard-content')
@@ -130,4 +128,9 @@
         </main>
     </div>
 </div>
+
+@push('head')
+<script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<style>[x-cloak]{display:none!important}</style>
+@endpush
 @endsection

@@ -7,7 +7,7 @@
 
 <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
     <form method="GET">
-        <select name="status" data-autosubmit aria-label="{{ __('Filter by status') }}"
+        <select name="status" onchange="this.form.submit()"
                 class="rounded-lg border-0 py-2 text-sm text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-brand-600">
             <option value="">{{ __('All Statuses') }}</option>
             @foreach (['pending', 'approved', 'rejected', 'cancelled'] as $status)
@@ -17,11 +17,11 @@
     </form>
     <div class="flex items-center gap-2">
         <x-btn href="{{ route('dashboard.bookings.calendar') }}" variant="secondary" size="sm">
-            <svg aria-hidden="true" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
             {{ __('Calendar') }}
         </x-btn>
         <x-btn href="{{ route('dashboard.bookings.create') }}" size="sm">
-            <svg aria-hidden="true" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
             {{ __('Add Appointment') }}
         </x-btn>
     </div>
@@ -30,7 +30,7 @@
 @if ($bookings->isEmpty())
     <x-empty-state :title="__('No bookings found')" :description="__('New booking requests from your customers will appear here.')">
         <x-slot:icon>
-            <svg aria-hidden="true" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
         </x-slot:icon>
         <x-slot:action>
             <x-btn href="{{ route('dashboard.bookings.create') }}" size="sm">{{ __('Add Appointment') }}</x-btn>
@@ -41,12 +41,12 @@
         <table class="min-w-full divide-y divide-gray-100 text-sm">
             <thead>
                 <tr class="text-start text-[11px] font-semibold uppercase tracking-wider text-gray-400">
-                    <th scope="col" class="px-5 py-3 text-start">{{ __('Customer') }}</th>
-                    <th scope="col" class="px-5 py-3 text-start">{{ __('Service') }}</th>
-                    <th scope="col" class="hidden px-5 py-3 text-start sm:table-cell">{{ __('Staff') }}</th>
-                    <th scope="col" class="px-5 py-3 text-start">{{ __('Date & Time') }}</th>
-                    <th scope="col" class="px-5 py-3 text-start">{{ __('Status') }}</th>
-                    <th scope="col" class="px-5 py-3"></th>
+                    <th class="px-5 py-3 text-start">{{ __('Customer') }}</th>
+                    <th class="px-5 py-3 text-start">{{ __('Service') }}</th>
+                    <th class="hidden px-5 py-3 text-start sm:table-cell">{{ __('Staff') }}</th>
+                    <th class="px-5 py-3 text-start">{{ __('Date & Time') }}</th>
+                    <th class="px-5 py-3 text-start">{{ __('Status') }}</th>
+                    <th class="px-5 py-3"></th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-50">
@@ -85,7 +85,7 @@
                                 </div>
                             @elseif ($booking->status === 'approved')
                                 <form method="POST" action="{{ route('dashboard.bookings.cancel', $booking) }}"
-                                      data-confirm="{{ __('Cancel the appointment for :name? The time slot will become available again.', ['name' => $booking->customer_name]) }}">
+                                      onsubmit="return confirm(@js(__('Cancel the appointment for :name? The time slot will become available again.', ['name' => $booking->customer_name])));">
                                     @csrf
                                     <x-btn size="sm" variant="ghost" class="!text-red-600">{{ __('Cancel Appointment') }}</x-btn>
                                 </form>

@@ -6,14 +6,14 @@
 @section('admin-content')
 
 <form method="GET" class="mb-5 flex flex-wrap gap-3">
-    <select name="salon_id" data-autosubmit aria-label="{{ __('Filter by salon') }}"
+    <select name="salon_id" onchange="this.form.submit()"
             class="rounded-lg border-0 py-2 text-sm text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-brand-600">
         <option value="">{{ __('All Salons') }}</option>
         @foreach ($salons as $salon)
             <option value="{{ $salon->id }}" @selected(request('salon_id') == $salon->id)>{{ $salon->name }}</option>
         @endforeach
     </select>
-    <select name="status" data-autosubmit aria-label="{{ __('Filter by status') }}"
+    <select name="status" onchange="this.form.submit()"
             class="rounded-lg border-0 py-2 text-sm text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-brand-600">
         <option value="">{{ __('All Statuses') }}</option>
         @foreach (['pending', 'approved', 'rejected', 'cancelled'] as $status)
@@ -25,7 +25,7 @@
 @if ($bookings->isEmpty())
     <x-empty-state :title="__('No bookings found')" :description="__('Bookings across all salons will appear here.')">
         <x-slot:icon>
-            <svg aria-hidden="true" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
         </x-slot:icon>
     </x-empty-state>
 @else
@@ -33,11 +33,11 @@
         <table class="min-w-full divide-y divide-gray-100 text-sm">
             <thead>
                 <tr class="text-[11px] font-semibold uppercase tracking-wider text-gray-400">
-                    <th scope="col" class="px-5 py-3 text-start">{{ __('Salon') }}</th>
-                    <th scope="col" class="px-5 py-3 text-start">{{ __('Customer') }}</th>
-                    <th scope="col" class="px-5 py-3 text-start">{{ __('Service') }}</th>
-                    <th scope="col" class="px-5 py-3 text-start">{{ __('Date & Time') }}</th>
-                    <th scope="col" class="px-5 py-3 text-start">{{ __('Status') }}</th>
+                    <th class="px-5 py-3 text-start">{{ __('Salon') }}</th>
+                    <th class="px-5 py-3 text-start">{{ __('Customer') }}</th>
+                    <th class="px-5 py-3 text-start">{{ __('Service') }}</th>
+                    <th class="px-5 py-3 text-start">{{ __('Date & Time') }}</th>
+                    <th class="px-5 py-3 text-start">{{ __('Status') }}</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-50">
